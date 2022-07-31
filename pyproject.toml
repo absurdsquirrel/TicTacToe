@@ -19,4 +19,5 @@ classifiers = [
 ]
 
 [project.urls]
-# TODO
+"Homepage" = "https://github.com/absurdsquirrel/TicTacToe"
+"Bug Tracker" = "https://github.com/absurdsquirrel/TicTacToe/issues"
