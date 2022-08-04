@@ -34,6 +34,59 @@ class Player:
         raise NotImplementedError
 
 
+class MiniMaxPlayer(Player):
+    from TicTacToe.Game import Game
+
+    def __init__(self, player_num, *, goal="win"):
+        Player.__init__(self, player_num, goal=goal)
+        self.game = None
+        self.mark = None
+
+    def hook_into_game(self, game: Game):
+        self.game = game
+        self.mark = game.marks[self.player_num]
+
+    def move(self, board):
+        self.find_moves(board)
+        best_val = -1000
+        best_move = -1
+        silent = True
+        for move in self.available_moves:
+            self.game.player_move(self, move, silent=silent)
+            move_val = self.minimax(move, 0, self.game.other_player(self), silent=silent)
+            self.game.undo_player_move(self, move, silent=silent)
+            if move_val > best_val:
+                best_val = move_val
+                best_move = move
+        return best_move
+
+    def minimax(self, move, depth, player, *, silent=True):
+        game_over, winner = self.game.evaluate_board(move)
+        inf = 1000
+        if game_over:
+            if not winner:
+                return 0
+            elif winner == self.mark:
+                return inf - depth
+            else:
+                return -inf + depth
+
+        self.find_moves(self.game.board)
+        if player is self:
+            best = -inf
+            for move in self.available_moves:
+                self.game.player_move(player, move, silent=silent)
+                best = max(best, self.minimax(move, depth + 1, self.game.other_player(player), silent=silent))
+                self.game.undo_player_move(player, move, silent=silent)
+        else:
+            best = inf
+            for move in self.available_moves:
+                self.game.player_move(player, move, silent=silent)
+                best = min(best, self.minimax(move, depth + 1, self.game.other_player(player), silent=silent))
+                self.game.undo_player_move(player, move, silent=silent)
+        return best
+
+
 class HumanPlayer(Player):
     def __init__(self, player_num, *, goal="win"):
         Player.__init__(self, player_num, goal=goal)
@@ -64,7 +117,7 @@ class LowestIndexPlayer(Player):
 
 class RandomPlayer(LowestIndexPlayer):
     def __init__(self, player_num, *, goal="win", seed=None):
-        LowestIndexPlayer.__init__(self, player_num=player_num, goal=goal)
+        LowestIndexPlayer.__init__(self, player_num, goal=goal)
         random.seed(a=seed)
 
     def move(self, board):
