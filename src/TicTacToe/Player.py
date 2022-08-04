@@ -1,8 +1,18 @@
+import random
+
+
 class Player:
     def __init__(self, *args, **kwargs):
         self.player_num = args[0]
         self.goal = kwargs["goal"]
-        pass
+        self._is_human = False
+
+    def __repr__(self):
+        return ["X", "O"][self.player_num]
+
+    @property
+    def is_human(self) -> bool:
+        return self._is_human
 
     def move(self, board):
         raise NotImplementedError
@@ -11,6 +21,7 @@ class Player:
 class HumanPlayer(Player):
     def __init__(self, player_num, *, goal="win"):
         Player.__init__(self, player_num, goal=goal)
+        self._is_human = True
 
     def move(self, board):
         move = input()
@@ -34,3 +45,24 @@ class LowestIndexPlayer(Player):
     def move(self, board):
         self.find_moves(board)
         return self.available_moves[0]
+
+
+class RandomPlayer(LowestIndexPlayer):
+    def __init__(self, player_num, *, goal="win", seed=None):
+        LowestIndexPlayer.__init__(self, player_num=player_num, goal=goal)
+        random.seed(a=seed)
+
+    def move(self, board):
+        self.find_moves(board)
+        return random.choice(self.available_moves)
+
+
+class InvalidMovePlayer(Player):
+    """
+    Always plays 4 to invoke invalid move handling for AI
+    """
+    def __init__(self, player_num, *, goal="win"):
+        Player.__init__(self, player_num, goal=goal)
+
+    def move(self, board):
+        return 4

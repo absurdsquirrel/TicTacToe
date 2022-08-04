@@ -9,16 +9,16 @@ class Game:
         self.players = [player0, player1]
         self.current_player = player0
 
-    def other_player(self, player):
+    def other_player(self, player) -> Player:
         return self.players[(player.player_num + 1) % 2]
 
-    def is_valid_move(self, move):
+    def is_valid_move(self, move) -> bool:
         if move not in range(9):
             return False
         r, c = divmod(move, 3)
         return self.board[r][c] == " "
 
-    def undo_player_move(self, player, move):
+    def undo_player_move(self, player, move) -> None:
         if player is self.current_player:
             raise ValueError(f"player {player.player_num} was not the previous player")
         if move not in range(9):
@@ -100,8 +100,9 @@ class Game:
             except ValueError as e:
                 print(e)
                 # AI automatically loses if it makes an illegal move
-                if not isinstance(self.current_player, HumanPlayer):
+                if not self.current_player.is_human:
                     self.end_game(self.other_player(self.current_player))
+                    quit(1)
             # check for game over
         self.print_board()
         self.end_game(winner)
