@@ -3,12 +3,28 @@ import random
 
 class Player:
     def __init__(self, *args, **kwargs):
-        self.player_num = args[0]
-        self.goal = kwargs["goal"]
+        self._player_num = args[0]
+        self._goal = kwargs["goal"]
         self._is_human = False
+        self._available_moves = []
+
+    @property
+    def available_moves(self):
+        return self._available_moves
+
+    def find_moves(self, board):
+        self._available_moves = [i for i in range(9) if board[i // 3][i % 3] == " "]
 
     def __repr__(self):
         return ["X", "O"][self.player_num]
+
+    @property
+    def player_num(self) -> int:
+        return self._player_num
+
+    @property
+    def goal(self) -> str:
+        return self._goal
 
     @property
     def is_human(self) -> bool:
@@ -25,8 +41,11 @@ class HumanPlayer(Player):
 
     def move(self, board):
         move = input()
-        while not move.isdigit():
-            print(f"{move} is not valid. Must be a number from 1 to 9")
+        self.find_moves(board)
+        while not move.isdigit() or (int(move) - 1) not in self.available_moves:
+            print(f"{move} is not valid. Available moves:")
+            for i in [0, 3, 6]:
+                print('{0} {1} {2}'.format(*[am+1 if am in self.available_moves else " " for am in range(i, i+3)]))
             move = input()
         return int(move) - 1
 
@@ -37,10 +56,6 @@ class LowestIndexPlayer(Player):
     """
     def __init__(self, player_num, *, goal="win"):
         Player.__init__(self, player_num, goal=goal)
-        self.available_moves = []
-
-    def find_moves(self, board):
-        self.available_moves = [i for i in range(9) if board[i // 3][i % 3] == " "]
 
     def move(self, board):
         self.find_moves(board)
