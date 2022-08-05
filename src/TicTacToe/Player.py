@@ -60,7 +60,7 @@ class MiniMaxPlayer(Player):
                 best_move = move
         return best_move
 
-    def minimax(self, move, depth, player, *, silent=True):
+    def minimax(self, move, depth, player, *, silent=True, alpha=-1000, beta=1000):
         game_over, winner = self.game.evaluate_board(move)
         inf = 1000
         if game_over:
@@ -72,18 +72,30 @@ class MiniMaxPlayer(Player):
                 return -inf + depth
 
         self.find_moves(self.game.board)
+        # Maximizer
         if player is self:
             best = -inf
             for move in self.available_moves:
                 self.game.player_move(player, move, silent=silent)
-                best = max(best, self.minimax(move, depth + 1, self.game.other_player(player), silent=silent))
+                best = max(best, self.minimax(move, depth + 1, self.game.other_player(player),
+                                              silent=silent, alpha=alpha, beta=beta))
+                alpha = max(alpha, best)
                 self.game.undo_player_move(player, move, silent=silent)
+
+                if beta <= alpha:
+                    break
+        # Minimizer
         else:
             best = inf
             for move in self.available_moves:
                 self.game.player_move(player, move, silent=silent)
-                best = min(best, self.minimax(move, depth + 1, self.game.other_player(player), silent=silent))
+                best = min(best, self.minimax(move, depth + 1, self.game.other_player(player),
+                                              silent=silent, alpha=alpha, beta=beta))
+                beta = min(beta, best)
                 self.game.undo_player_move(player, move, silent=silent)
+
+                if beta <= alpha:
+                    break
         return best
 
 
