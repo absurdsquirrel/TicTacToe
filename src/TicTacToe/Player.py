@@ -4,7 +4,7 @@ import random
 class Player:
     def __init__(self, *args, **kwargs):
         self._player_num = args[0]
-        self._goal = kwargs["goal"]
+        self._goal = kwargs.get("goal", "win")
         self._is_human = False
         self._available_moves = []
 
@@ -37,14 +37,10 @@ class Player:
 class MiniMaxPlayer(Player):
     from TicTacToe.Game import Game
 
-    def __init__(self, player_num, *, goal="win"):
+    def __init__(self, player_num, *, goal="win", game: Game):
         Player.__init__(self, player_num, goal=goal)
-        self.game = None
-        self.mark = None
-
-    def hook_into_game(self, game: Game):
         self.game = game
-        self.mark = game.marks[self.player_num]
+        self.mark = None
 
     def move(self, board):
         self.find_moves(board)
@@ -100,7 +96,7 @@ class MiniMaxPlayer(Player):
 
 
 class HumanPlayer(Player):
-    def __init__(self, player_num, *, goal="win"):
+    def __init__(self, player_num, *, goal="win", **kwargs):
         Player.__init__(self, player_num, goal=goal)
         self._is_human = True
 
@@ -119,7 +115,7 @@ class LowestIndexPlayer(Player):
     """
     Bad AI player for testing purposes
     """
-    def __init__(self, player_num, *, goal="win"):
+    def __init__(self, player_num, *, goal="win", **kwargs):
         Player.__init__(self, player_num, goal=goal)
 
     def move(self, board):
@@ -128,7 +124,7 @@ class LowestIndexPlayer(Player):
 
 
 class RandomPlayer(LowestIndexPlayer):
-    def __init__(self, player_num, *, goal="win", seed=None):
+    def __init__(self, player_num, *, goal="win", seed=None, **kwargs):
         LowestIndexPlayer.__init__(self, player_num, goal=goal)
         random.seed(a=seed)
 
@@ -141,7 +137,7 @@ class InvalidMovePlayer(Player):
     """
     Always plays 4 to invoke invalid move handling for AI
     """
-    def __init__(self, player_num, *, goal="win"):
+    def __init__(self, player_num, *, goal="win", **kwargs):
         Player.__init__(self, player_num, goal=goal)
 
     def move(self, board):

@@ -1,13 +1,14 @@
 from TicTacToe import Player
+from typing import Type
 
 
 class Game:
-    def __init__(self, player0: Player, player1: Player):
+    def __init__(self, player0: Type[Player.Player], player1: Type[Player.Player]):
         self.board = [[" "] * 3 for _ in range(3)]
         self.empty_squares = 9
         self.marks = ["X", "O"]
-        self.players = [player0, player1]
-        self.current_player = player0
+        self.players = [player0(0, game=self), player1(1, game=self)]
+        self.current_player = self.players[0]
 
     def other_player(self, player) -> Player:
         return self.players[(player.player_num + 1) % 2]
