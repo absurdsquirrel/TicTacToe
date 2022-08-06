@@ -3,10 +3,17 @@ from typing import Type
 
 
 class Game:
-    def __init__(self, player0: Type[Player.Player], player1: Type[Player.Player]):
+    def __init__(self, player0: Type[Player.Player], player1: Type[Player.Player], *, smbc: bool = False):
+        """
+
+        :param player0: Player class for first player (X)
+        :param player1: Player class for second player (O)
+        :param smbc: If True, will play Incomplete Information Tic-Tac-Toe
+        """
         self.board = [[" "] * 3 for _ in range(3)]
         self.empty_squares = 9
         self.marks = ["X", "O"]
+        self.smbc = smbc
         self.players = [player0(0, game=self), player1(1, game=self)]
         self.current_player = self.players[0]
 

@@ -37,10 +37,10 @@ class Player:
 class MiniMaxPlayer(Player):
     from TicTacToe.Game import Game
 
-    def __init__(self, player_num, *, goal="win", game: Game):
-        Player.__init__(self, player_num, goal=goal)
+    def __init__(self, player_num, *, goal="win", game: Game, **kwargs):
+        Player.__init__(self, player_num, goal=goal, **kwargs)
         self.game = game
-        self.mark = None
+        self.mark = ["X", "O"][player_num]
 
     def move(self, board):
         self.find_moves(board)
@@ -97,7 +97,7 @@ class MiniMaxPlayer(Player):
 
 class HumanPlayer(Player):
     def __init__(self, player_num, *, goal="win", **kwargs):
-        Player.__init__(self, player_num, goal=goal)
+        Player.__init__(self, player_num, goal=goal, **kwargs)
         self._is_human = True
 
     def move(self, board):
@@ -125,7 +125,7 @@ class LowestIndexPlayer(Player):
 
 class RandomPlayer(LowestIndexPlayer):
     def __init__(self, player_num, *, goal="win", seed=None, **kwargs):
-        LowestIndexPlayer.__init__(self, player_num, goal=goal)
+        LowestIndexPlayer.__init__(self, player_num, goal=goal, **kwargs)
         random.seed(a=seed)
 
     def move(self, board):
@@ -138,7 +138,7 @@ class InvalidMovePlayer(Player):
     Always plays 4 to invoke invalid move handling for AI
     """
     def __init__(self, player_num, *, goal="win", **kwargs):
-        Player.__init__(self, player_num, goal=goal)
+        Player.__init__(self, player_num, goal=goal, **kwargs)
 
     def move(self, board):
         return 4
