@@ -17,6 +17,6 @@ At the start of each round, players are assigned a random goal which is conceale
  - Draw
  - Lose
 
-At the end of the round, each player which achieved their goal is awarded a point.
+At the end of the round, each player who achieved their goal is awarded a point.
 
 The winner is the first player to reach 5 points. Or the player who would go first in the next round in the case of a tie.

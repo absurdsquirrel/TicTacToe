@@ -7,6 +7,13 @@ class Player:
         self._goal = kwargs.get("goal", "win")
         self._is_human = False
         self._available_moves = []
+        self.points = 0
+
+    def random_goal(self, debug=False):
+        goals = ["win", "draw", "lose"]
+        self._goal = random.choice(goals)
+        if debug or self.is_human:
+            print(f"{self} has goal: {self.goal}")
 
     @property
     def available_moves(self):
@@ -60,11 +67,11 @@ class MiniMaxPlayer(Player):
         game_over, winner = self.game.evaluate_board(move)
         inf = 1000
         if game_over:
-            if not winner:
+            if winner is None:      # draw
                 return 0
-            elif winner == self.mark:
+            elif winner == self:    # win
                 return inf - depth
-            else:
+            else:                   # lose
                 return -inf + depth
 
         self.find_moves(self.game.board)

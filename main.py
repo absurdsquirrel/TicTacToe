@@ -2,7 +2,7 @@ from TicTacToe import Player, Game
 
 
 def main():
-    my_game = Game.Game(Player.RandomPlayer, Player.RandomPlayer)
+    my_game = Game.Game(Player.MiniMaxPlayer, Player.LowestIndexPlayer, smbc=True)
     my_game.play_game()
 
 
