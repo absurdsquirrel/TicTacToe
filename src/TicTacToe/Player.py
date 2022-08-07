@@ -78,24 +78,24 @@ class MiniMaxPlayer(Player):
         # Maximizer
         if player is self:
             best = -inf
-            for move in self.available_moves:
-                self.game.player_move(player, move, silent=silent)
-                best = max(best, self.minimax(move, depth + 1, self.game.other_player(player),
+            for next_move in self.available_moves:
+                self.game.player_move(player, next_move, silent=silent)
+                best = max(best, self.minimax(next_move, depth + 1, self.game.other_player(player),
                                               silent=silent, alpha=alpha, beta=beta))
+                self.game.undo_player_move(player, next_move, silent=silent)
                 alpha = max(alpha, best)
-                self.game.undo_player_move(player, move, silent=silent)
 
                 if beta <= alpha:
                     break
         # Minimizer
         else:
             best = inf
-            for move in self.available_moves:
-                self.game.player_move(player, move, silent=silent)
-                best = min(best, self.minimax(move, depth + 1, self.game.other_player(player),
+            for next_move in self.available_moves:
+                self.game.player_move(player, next_move, silent=silent)
+                best = min(best, self.minimax(next_move, depth + 1, self.game.other_player(player),
                                               silent=silent, alpha=alpha, beta=beta))
+                self.game.undo_player_move(player, next_move, silent=silent)
                 beta = min(beta, best)
-                self.game.undo_player_move(player, move, silent=silent)
 
                 if beta <= alpha:
                     break
