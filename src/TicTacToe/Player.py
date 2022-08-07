@@ -51,17 +51,26 @@ class MiniMaxPlayer(Player):
 
     def move(self, board):
         self.find_moves(board)
-        best_val = -1000
-        best_move = -1
+        inf = 10000
+        win_val = -inf
+        draw_val = inf
+        lose_val = inf
+        best_move = {"win": -1, "draw": -1, "lose": -1}
         silent = True
         for move in self.available_moves:
             self.game.player_move(self, move, silent=silent)
             move_val = self.minimax(move, 0, self.game.other_player(self), silent=silent)
             self.game.undo_player_move(self, move, silent=silent)
-            if move_val > best_val:
-                best_val = move_val
-                best_move = move
-        return best_move
+            if move_val > win_val:
+                win_val = move_val
+                best_move["win"] = move
+            if move_val < lose_val:
+                lose_val = move_val
+                best_move["lose"] = move
+            if abs(move_val) < draw_val:
+                draw_val = abs(move_val)
+                best_move["draw"] = move
+        return best_move[self.goal]
 
     def minimax(self, move, depth, player, *, silent=True, alpha=-1000, beta=1000):
         game_over, winner = self.game.evaluate_board(move)

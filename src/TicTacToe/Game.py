@@ -105,10 +105,10 @@ class Game:
 
     def play_game(self):
         debug = True
-        if self.smbc:
-            for player in self.players:
-                player.random_goal(debug=debug)
         while self.players[0].points < 5 and self.players[1].points < 5:
+            if self.smbc:
+                for player in self.players:
+                    player.random_goal(debug=debug)
             starting_player = self.current_player
             winner = self.play_round()
             if not self.smbc:
@@ -132,10 +132,6 @@ class Game:
                 for j in range(3):
                     self.board[i][j] = " "
             self.empty_squares = 9
-
-            # roll new goals
-            for player in self.players:
-                player.random_goal(debug=debug)
 
         if self.players[0].points == self.players[1].points:
             final_winner = self.current_player  # the player who would have the first move next wins on a tie
